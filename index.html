@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="FarkleApp">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <title>Farkle</title>
+</head>
+<body ng-controller="FarkleController" class="container-fluid">
+<div class="row">
+    <h1 class="col-xs-10" style="display: inline">Farkle!</h1>
+    <a class="col-xs-2" style="padding-top: 25px; text-align: center" href="http://www.mommyramblings.org/wp-content/uploads/2012/01/farkle3.jpg" target="_blank">Rules</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Turn</th>
+            <th>Name</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="player in farkle.players">
+            <td>
+                <div ng-if="player == farkle.getCurrentPlayer()"><i class="fa fa-star"></i></div>
+            </td>
+            <td>
+                <input ng-if="!farkle.started" type="text" ng-model="player.name">
+                <span ng-if="farkle.started">{{player.name}}</span>
+            </td>
+            <td>
+                {{player.score}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<div ng-if="!farkle.started">
+    <button ng-if="!farkle.started" type="button" class="btn btn-primary" ng-click="farkle.addPlayer()">
+        Add Player
+    </button>
+    <button type="button" class="btn btn-success" ng-click="farkle.start()">
+        Start Game
+    </button>
+    <span style="padding-left: 100px">
+        Points to Win: <input type="number" ng-model="farkle.goal">
+    </span>
+</div>
+<div ng-if="farkle.started">
+    Playing to {{farkle.goal}}
+</div>
+
+<section ng-if="farkle.started">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Dice</th>
+                <th>Score</th>
+                <th>Total</th>
+                <th>Roll</th>
+                <th>Combos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="turn in farkle.turns">
+                <td>
+                    {{turn.player.name}}
+                </td>
+                <td>
+                    <section ng-if="!turn.saved">
+                        <span ng-repeat="die in turn.dice">
+                            <img ng-if="die.setAside" ng-src="images/die{{die.roll}}-inverse.png" height="20px">
+                            <input ng-if="!die.setAside" class="die-input" width="20" ng-model="die.roll" type="number">
+                        </span>
+                    </section>
+                    <section ng-if="turn.saved">
+                        <span ng-repeat="die in turn.dice">
+                            <img ng-if="die.setAside"  ng-click="die.setAside = turn == farkle.getCurrentTurn() ? false : die.setAside" ng-src="images/die{{die.roll}}-inverse.png" height="20px">
+                            <img ng-if="!die.setAside" ng-click="die.setAside = turn == farkle.getCurrentTurn() ? true : die.setAside" ng-src="images/die{{die.roll}}.png" height="20px">
+                        </span>
+                    </section>
+                </td>
+                <td>
+                    <section ng-if="!turn.saved">
+                        <button type="button" class="btn" ng-click="farkle.saveRoll()">Save</button>
+                        <button type="button" class="btn btn-danger" ng-click="farkle.farkle()">Farkle</button>
+                    </section>
+                    <section ng-if="turn.saved && !turn.fixScore">
+                        {{turn.score}}
+                    </section>
+                </td>
+                <td>
+                    <section>
+                        <input ng-if="turn.fixScore" type="number" ng-model="turn.total">
+                        <span ng-if="!turn.fixScore">{{turn.total}}</span>
+                    </section>
+                </td>
+                <td>
+                    <button type="button" class="btn disabled">Roll</button>
+                </td>
+                <td>
+                    <div ng-repeat="message in turn.messages">{{message}}</div>
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-primary" ng-click="farkle.rollAgain()">
+        Roll Again
+    </button>
+    <button type="button" class="btn btn-danger" ng-click="farkle.nextTurn()">
+        End Turn
+    </button>
+    <button type="button" class="btn" ng-click="farkle.getCurrentTurn().fixScore = true">
+        Fix Score
+    </button>
+
+</section>
+
+<div class="well" style="margin-top: 100px">
+    After rolling, enter your dice in the input boxes <br>
+    Click on the dice you want to keep and click "Roll Again"<br>
+    Keep rolling until you are satisfied with your score, or you Farkle<br>
+    Once you are finished, click the "End Turn" button<br>
+    The first player to reach the goal ({{farkle.goal}}) wins<br>
+    Refresh the page to play a new game<br>
+</div>
+
+</body>
+</html>

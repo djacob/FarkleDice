@@ -1,0 +1,23 @@
+{
+  "name": "JPDFarkle",
+  "version": "0.0.0",
+  "authors": [
+    "Jacob Duell <jacob.duell@altamiracorp.com>"
+  ],
+  "description": "Used to score the dice game Farkle",
+  "keywords": [
+    "Farkle"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.3",
+    "bootstrap": "~3.3.5"
+  }
+}
